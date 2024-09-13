@@ -26,6 +26,7 @@ where
     F: Parser<&'a str, InstructionName, E>,
 {
     move |input: &'a str| {
+        println!("{:#?}", input);
         let (input, instr_name) = instr.parse(input)?;
 
         Ok((input, Instruction {
