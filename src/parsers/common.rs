@@ -1,5 +1,5 @@
 use nom::{
-    character::complete::{digit1, multispace0, space0},
+    character::complete::{digit1, line_ending, multispace0, space0},
     combinator::{map_res, recognize},
     error::ParseError,
     sequence::{delimited, terminated},

@@ -1,11 +1,16 @@
 use nom::{
-    branch::alt, bytes::complete::tag_no_case, character::complete::{char, space0, space1}, error::{ErrorKind, FromExternalError, ParseError}, sequence::delimited, Err, IResult, Parser
+    branch::alt,
+    bytes::complete::tag_no_case,
+    character::complete::{char, space0, space1},
+    error::{ErrorKind, FromExternalError, ParseError},
+    sequence::delimited,
+    Err, IResult, Parser,
 };
 use strum::ParseError as StrumParseError;
 
 use crate::types::{Instruction, InstructionName, Reference};
 
-use super::declaration::{ref_dir, ref_div, ref_ind, ref_val};
+use super::declaration::ref_div;
 
 pub fn inst_name<'a, E>(
     name: &'a str,

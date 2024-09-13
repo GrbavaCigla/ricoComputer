@@ -1,19 +1,17 @@
-use std::str::FromStr;
-
 use super::{
     common::{empty_line, mws, ws},
-    declaration::{decl, ref_dir, ref_val},
-    instruction::{inst, inst0, inst1, inst_name},
+    declaration::{decl, ref_val},
+    instruction::{inst, inst1},
 };
-use crate::types::{Instruction, InstructionName, Reference, SyntaxTree};
+use crate::types::SyntaxTree;
 use nom::{
     branch::alt,
-    bytes::complete::{tag, tag_no_case},
-    character::complete::{alpha0, line_ending, multispace0, multispace1},
-    combinator::{all_consuming, eof, map_res, opt, peek, recognize},
-    multi::{many0, many1, many_till, separated_list0},
-    sequence::{delimited, pair, terminated, tuple},
-    IResult, Parser,
+    bytes::complete::tag_no_case,
+    character::complete::line_ending,
+    combinator::{all_consuming, eof, map_res},
+    multi::{many0, many1},
+    sequence::{terminated, tuple},
+    IResult,
 };
 
 pub fn parse(input: &str) -> IResult<&str, SyntaxTree> {
