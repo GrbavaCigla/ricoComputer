@@ -1,17 +1,8 @@
-use nom::{bytes::complete::{take_till, take_until}, character::complete::{line_ending, not_line_ending}, IResult};
+mod common;
+pub mod instruction;
+pub mod declaration;
+pub mod parser;
 
-use crate::types::SyntaxTree;
+pub use parser::parse;
 
-pub mod primitives;
-pub mod symbol;
 
-pub fn parse(input: &str) -> IResult<&str, SyntaxTree> {
-    println!("{:#?}", not_line_ending(input)?);
-
-    Ok((
-        "",
-        SyntaxTree {
-            declarations: vec![],
-        },
-    ))
-}
