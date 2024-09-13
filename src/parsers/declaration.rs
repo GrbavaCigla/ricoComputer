@@ -51,3 +51,7 @@ pub fn ref_val(input: &str) -> IResult<&str, Reference> {
     let (input, name) = number(input)?;
     Ok((input, Reference::Value(name)))
 }
+
+pub fn ref_div(input: &str) -> IResult<&str, Reference> {
+    alt((ref_dir, ref_ind, ref_val))(input)
+}
