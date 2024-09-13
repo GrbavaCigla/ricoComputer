@@ -1,33 +1,54 @@
+use std::str::FromStr;
+
 use super::{
-    common::ws,
+    common::{empty_line, mws, ws},
     declaration::{decl, ref_dir, ref_val},
     instruction::{inst0, inst1, inst_name},
 };
-use crate::{
-    parsers::common::mws,
-    types::{InstructionName, Reference, SyntaxTree},
-};
+use crate::types::{Instruction, InstructionName, Reference, SyntaxTree};
 use nom::{
-    branch::alt, bytes::complete::tag_no_case, character::complete::{alpha0, line_ending, multispace0, multispace1}, combinator::{all_consuming, map_res, peek}, complete::tag, multi::{many_till, separated_list0}, sequence::{delimited, pair, terminated, tuple}, IResult, Parser
+    branch::alt,
+    bytes::complete::{tag, tag_no_case},
+    character::complete::{alpha0, line_ending, multispace0, multispace1},
+    combinator::{all_consuming, eof, map_res, opt, peek, recognize},
+    multi::{many0, many1, many_till, separated_list0},
+    sequence::{delimited, pair, terminated, tuple},
+    IResult, Parser,
 };
 
 pub fn parse(input: &str) -> IResult<&str, SyntaxTree> {
-    // let org_inst = inst1(map_res(tag_no_case("org"), InstructionName::parse), ref_val);
+    let org_line = terminated(
+        ws(inst1(map_res(tag_no_case("org"), str::parse), ref_val)),
+        line_ending,
+    );
+    let org_part = empty_line(mws(org_line));
 
-    // let decl_line = terminated(ws(decl), line_ending);
-    // // let instr_line = ws(inst0);
-    
-    // let mut syntax = many_till(mws(decl_line), org_inst);
+    let decl_line = terminated(ws(decl), empty_line(line_ending));
+    let decl_part = mws(many0(decl_line));
 
-    // println!("{:?}", syntax(input));
-    // println!("{:#?}", inst1(map_res(tag_no_case("org"), InstructionName::parse), ref_val)("ORG 3"));
-    println!("{:#?}", inst0(map_res(tag("org"), InstructionName::parse)).parse("org")?);
-    // let (input, declarations) = all_consuming(tuple((decl_parser)))(input)?;
+    let instr_line = terminated(ws(inst0(inst_name)), empty_line(alt((line_ending, eof))));
+    let instr_part = mws(many1(instr_line));
+
+    let mut syntax = all_consuming(tuple((decl_part, org_part, instr_part)));
+
+    let (input, st_raw) = syntax(input)?;
 
     Ok((
-        "",
+        input,
+        // SyntaxTree {
+        //     org: Instruction {
+        //         name: InstructionName::ORG,
+        //         arg1: None,
+        //         arg2: None,
+        //         arg3: None,
+        //     },
+        //     declarations: vec![],
+        //     instructions: vec![],
+        // },
         SyntaxTree {
-            declarations: vec![],
+            declarations: st_raw.0,
+            org: st_raw.1,
+            instructions: st_raw.2,
         },
     ))
 }

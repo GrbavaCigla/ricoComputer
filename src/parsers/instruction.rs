@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use nom::{
     branch::alt,
     bytes::complete::{tag, tag_no_case},
@@ -15,7 +17,7 @@ use super::common::ws;
 pub fn inst_name(input: &str) -> IResult<&str, InstructionName> {
     let instruction_names = (tag_no_case("org"), tag_no_case("stop"));
 
-    map_res(alt(instruction_names), InstructionName::parse)(input)
+    map_res(alt(instruction_names), str::parse)(input)
 }
 
 pub fn inst0<'a, E, F>(
@@ -26,7 +28,6 @@ where
     F: Parser<&'a str, InstructionName, E>,
 {
     move |input: &'a str| {
-        println!("{:#?}", input);
         let (input, instr_name) = instr.parse(input)?;
 
         Ok((input, Instruction {

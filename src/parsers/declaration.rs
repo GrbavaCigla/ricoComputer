@@ -48,8 +48,6 @@ pub fn ref_addr(input: &str) -> IResult<&str, Reference> {
 }
 
 pub fn ref_val(input: &str) -> IResult<&str, Reference> {
-    println!("{}", input);
     let (input, name) = number(input)?;
-    println!("KITA");
     Ok((input, Reference::Value(name)))
 }

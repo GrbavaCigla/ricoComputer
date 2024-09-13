@@ -7,12 +7,7 @@ use super::declaration::Reference;
 #[derive(Debug, EnumString, Clone, Display)]
 pub enum InstructionName {
     STOP,
-}
-
-impl InstructionName {
-    pub fn parse<F: FromStr>(str: &str) -> Result<F, F::Err> {
-        FromStr::from_str(str)
-    }
+    ORG,
 }
 
 #[derive(Debug)]
