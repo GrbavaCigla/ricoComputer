@@ -5,6 +5,7 @@ use strum_macros::{Display, EnumString};
 use super::declaration::Reference;
 
 #[derive(Debug, EnumString, Clone, Display)]
+#[strum(ascii_case_insensitive)]
 pub enum InstructionName {
     STOP,
     ORG,

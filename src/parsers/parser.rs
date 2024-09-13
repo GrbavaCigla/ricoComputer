@@ -35,16 +35,6 @@ pub fn parse(input: &str) -> IResult<&str, SyntaxTree> {
 
     Ok((
         input,
-        // SyntaxTree {
-        //     org: Instruction {
-        //         name: InstructionName::ORG,
-        //         arg1: None,
-        //         arg2: None,
-        //         arg3: None,
-        //     },
-        //     declarations: vec![],
-        //     instructions: vec![],
-        // },
         SyntaxTree {
             declarations: st_raw.0,
             org: st_raw.1,
