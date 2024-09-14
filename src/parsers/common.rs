@@ -1,11 +1,10 @@
 use nom::{
-    character::complete::{digit1, line_ending, multispace0, space0},
+    character::complete::{digit1, multispace0, space0},
     combinator::{map_res, recognize},
-    error::ParseError,
+    error::{FromExternalError, ParseError},
     sequence::{delimited, terminated},
     IResult, Parser,
 };
-use num_traits::Unsigned;
 use std::str::FromStr;
 
 pub fn mws<'a, F: 'a, O, E>(inner: F) -> impl FnMut(&'a str) -> IResult<&'a str, O, E>
@@ -24,8 +23,12 @@ where
     delimited(space0, inner, space0)
 }
 
-pub fn number<T: Unsigned + FromStr>(input: &str) -> IResult<&str, T> {
-    map_res(recognize(digit1), str::parse)(input)
+pub fn number<'a, T, E, E1>(input: &'a str) -> IResult<&'a str, T, E>
+where
+    E: FromExternalError<&'a str, E1> + ParseError<&'a str>,
+    T: FromStr<Err = E1>,
+{
+    map_res(recognize(digit1), str::parse).parse(input)
 }
 
 pub fn empty_line<'a, F: 'a, O, E>(inner: F) -> impl FnMut(&'a str) -> IResult<&'a str, O, E>

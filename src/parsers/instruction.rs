@@ -1,3 +1,5 @@
+use std::num::ParseIntError;
+
 use nom::{
     branch::alt,
     bytes::complete::tag_no_case,
@@ -144,7 +146,12 @@ where
     }
 }
 
-pub fn inst(input: &str) -> IResult<&str, Instruction> {
+pub fn inst<'a, E>(input: &'a str) -> IResult<&'a str, Instruction, E>
+where
+    E: ParseError<&'a str>
+        + FromExternalError<&'a str, StrumParseError>
+        + FromExternalError<&'a str, ParseIntError>,
+{
     alt((
         inst0(inst_name("org")),
         inst0(inst_name("stop")),

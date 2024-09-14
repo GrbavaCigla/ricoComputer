@@ -1,3 +1,5 @@
+use std::num::ParseIntError;
+
 use super::{
     common::{empty_line, mws, ws},
     declaration::{decl, ref_val},
@@ -9,12 +11,20 @@ use nom::{
     bytes::complete::tag_no_case,
     character::complete::line_ending,
     combinator::{all_consuming, eof, map_res},
+    error::{FromExternalError, ParseError},
     multi::{many0, many1},
     sequence::{terminated, tuple},
     IResult,
 };
+use strum::ParseError as StrumParseError;
 
-pub fn parse(input: &str) -> IResult<&str, SyntaxTree> {
+pub fn parse<'a, E>(input: &'a str) -> IResult<&'a str, SyntaxTree, E>
+where
+    E: ParseError<&'a str>
+        + FromExternalError<&'a str, ParseIntError>
+        + FromExternalError<&'a str, StrumParseError>
+        + 'a,
+{
     let org_line = terminated(
         ws(inst1(map_res(tag_no_case("org"), str::parse), ref_val)),
         line_ending,
