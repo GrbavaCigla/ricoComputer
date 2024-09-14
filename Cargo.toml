@@ -9,3 +9,4 @@ structopt = { version = "0.3.26", features = ["color"] }
 num-traits = "0.2.19"
 strum = "0.26.3"
 strum_macros = "0.26.4"
+nom-supreme = "0.8.0"
