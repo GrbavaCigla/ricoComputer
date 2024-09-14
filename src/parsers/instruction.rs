@@ -2,12 +2,12 @@ use std::num::ParseIntError;
 
 use nom::{
     branch::alt,
-    bytes::complete::tag_no_case,
     character::complete::{char, space0, space1},
     error::{ErrorKind, FromExternalError, ParseError},
     sequence::delimited,
     Err, IResult, Parser,
 };
+use nom_supreme::tag::{complete::tag_no_case, TagError};
 use strum::ParseError as StrumParseError;
 
 use crate::types::{Instruction, InstructionName, Reference};
@@ -18,7 +18,9 @@ pub fn inst_name<'a, E>(
     name: &'a str,
 ) -> impl FnMut(&'a str) -> IResult<&'a str, InstructionName, E>
 where
-    E: FromExternalError<&'a str, StrumParseError> + ParseError<&'a str>,
+    E: FromExternalError<&'a str, StrumParseError>
+        + ParseError<&'a str>
+        + TagError<&'a str, &'a str>,
 {
     move |input: &'a str| {
         let (input, name) = tag_no_case(name).parse(input)?;
@@ -150,7 +152,8 @@ pub fn inst<'a, E>(input: &'a str) -> IResult<&'a str, Instruction, E>
 where
     E: ParseError<&'a str>
         + FromExternalError<&'a str, StrumParseError>
-        + FromExternalError<&'a str, ParseIntError>,
+        + FromExternalError<&'a str, ParseIntError>
+        + TagError<&'a str, &'a str>,
 {
     alt((
         inst0(inst_name("org")),

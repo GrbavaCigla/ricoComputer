@@ -8,7 +8,6 @@ use super::{
 use crate::types::SyntaxTree;
 use nom::{
     branch::alt,
-    bytes::complete::tag_no_case,
     character::complete::line_ending,
     combinator::{all_consuming, eof, map_res},
     error::{FromExternalError, ParseError},
@@ -16,6 +15,8 @@ use nom::{
     sequence::{terminated, tuple},
     IResult,
 };
+use nom_supreme::tag::{complete::tag_no_case, TagError};
+
 use strum::ParseError as StrumParseError;
 
 pub fn parse<'a, E>(input: &'a str) -> IResult<&'a str, SyntaxTree, E>
@@ -23,6 +24,7 @@ where
     E: ParseError<&'a str>
         + FromExternalError<&'a str, ParseIntError>
         + FromExternalError<&'a str, StrumParseError>
+        + TagError<&'a str, &'a str>
         + 'a,
 {
     let org_line = terminated(
