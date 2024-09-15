@@ -1,3 +1,5 @@
+use strum_macros::EnumTryAs;
+
 // TODO: Recheck type for value
 #[derive(Debug, PartialEq)]
 pub struct Declaration {
@@ -6,7 +8,7 @@ pub struct Declaration {
 }
 
 // TODO: Recheck type for value
-#[derive(Debug)]
+#[derive(Debug, EnumTryAs, Clone)]
 pub enum Reference {
     Direct(String),
     Indirect(String),

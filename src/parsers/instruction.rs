@@ -7,7 +7,6 @@ use nom::{
 };
 use nom_supreme::tag::complete::tag_no_case;
 
-use super::declaration::ref_div;
 use crate::types::{Error, IResult, Instruction, InstructionName, Reference};
 
 pub fn inst_name<'a>(name: &'static str) -> impl FnMut(&'a str) -> IResult<InstructionName> {
@@ -122,10 +121,10 @@ where
 
 pub fn inst<'a>(input: &'a str) -> IResult<Instruction> {
     alt((
-        inst0(inst_name("org")),
+        // inst1(inst_name("org"), ref_val),
         inst0(inst_name("stop")),
-        inst1(inst_name("stop"), ref_div),
-        inst2(inst_name("stop"), ref_div, ref_div),
-        inst3(inst_name("stop"), ref_div, ref_div, ref_div),
+        // inst1(inst_name("stop"), ref_div),
+        // inst2(inst_name("stop"), ref_div, ref_div),
+        // inst3(inst_name("stop"), ref_div, ref_div, ref_div),
     ))(input)
 }

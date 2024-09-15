@@ -4,6 +4,7 @@ mod commands;
 mod opt;
 mod parsers;
 mod types;
+mod asm;
 
 use commands::{compile, run};
 use opt::Opt;

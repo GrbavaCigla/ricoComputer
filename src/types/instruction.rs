@@ -1,12 +1,12 @@
-use strum_macros::{Display, EnumString};
+use strum_macros::EnumString;
 
 use super::declaration::Reference;
 
-#[derive(Debug, EnumString, Clone, Display)]
+#[derive(Debug, EnumString, Clone, Copy)]
 #[strum(ascii_case_insensitive)]
 pub enum InstructionName {
-    STOP,
     ORG,
+    STOP = 0b1111,
 }
 
 #[derive(Debug)]

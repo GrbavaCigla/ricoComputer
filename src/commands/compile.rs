@@ -1,17 +1,18 @@
 use std::{
     fmt::Display,
-    fs::read_to_string,
+    fs::{read_to_string, File},
+    io::Write,
     path::{Path, PathBuf},
 };
 
-use crate::{parsers::parse, types::SyntaxError};
+use crate::{asm::assemble, parsers::parse, types::SyntaxError};
 use miette::{IntoDiagnostic, NamedSource, Result, SourceSpan};
 use nom_supreme::{
     error::GenericErrorTree,
     final_parser::{ByteOffset, RecreateContext},
 };
 
-pub fn run<P: AsRef<Path>>(source: P, _output: Option<P>) -> Result<()> {
+pub fn run<P: AsRef<Path>>(source: P, output: Option<P>) -> Result<()> {
     let source_text = read_to_string(&source).into_diagnostic()?;
 
     // TODO: this error handling is not done, add a lot more data to error print
@@ -35,6 +36,15 @@ pub fn run<P: AsRef<Path>>(source: P, _output: Option<P>) -> Result<()> {
             return Err(err.into());
         }
     };
+
+    let byte_code = assemble(&syntax_tree)?;
+
+    let mut file = match output {
+        Some(o) => File::create(o).into_diagnostic()?,
+        None => File::create(source.as_ref().with_extension("bin")).into_diagnostic()?,
+    };
+
+    file.write_all(&byte_code).into_diagnostic()?;
 
     Ok(())
 }
