@@ -1,34 +1,24 @@
-use std::num::ParseIntError;
-
 use nom::{
     branch::alt,
     character::complete::{alpha1, alphanumeric1, char, space0},
     combinator::recognize,
-    error::{FromExternalError, ParseError},
     multi::many0_count,
     sequence::{delimited, pair, preceded, separated_pair, terminated},
-    IResult,
 };
-use nom_supreme::tag::{complete::tag, TagError};
+use nom_supreme::tag::complete::tag;
 
-use crate::types::{Declaration, Reference};
+use crate::types::{Declaration, IResult, Reference};
 
 use super::common::number;
 
-pub fn sym<'a, E>(input: &'a str) -> IResult<&'a str, &'a str, E>
-where
-    E: ParseError<&'a str> + TagError<&'a str, &'a str>,
-{
+pub fn sym<'a>(input: &'a str) -> IResult<&'a str> {
     recognize(pair(
         alt((alpha1, tag("_"))),
         many0_count(alt((alphanumeric1, tag("_")))),
     ))(input)
 }
 
-pub fn decl<'a, E>(input: &'a str) -> IResult<&'a str, Declaration, E>
-where
-    E: ParseError<&'a str> + FromExternalError<&'a str, ParseIntError>  + TagError<&'a str, &'a str>,
-{
+pub fn decl<'a>(input: &'a str) -> IResult<Declaration> {
     let (input, (symbol, value)) =
         separated_pair(terminated(sym, space0), char('='), preceded(space0, number))(input)?;
 
@@ -41,41 +31,26 @@ where
     ))
 }
 
-pub fn ref_dir<'a, E>(input: &'a str) -> IResult<&'a str, Reference, E>
-where
-    E: ParseError<&'a str> + TagError<&'a str, &'a str>,
-{
+pub fn ref_dir<'a>(input: &'a str) -> IResult<Reference> {
     let (input, name) = sym(input)?;
     Ok((input, Reference::Direct(name.to_string())))
 }
 
-pub fn ref_ind<'a, E>(input: &'a str) -> IResult<&'a str, Reference, E>
-where
-    E: ParseError<&'a str> + TagError<&'a str, &'a str>,
-{
+pub fn ref_ind<'a>(input: &'a str) -> IResult<Reference> {
     let (input, name) = delimited(char('('), sym, char(')'))(input)?;
     Ok((input, Reference::Indirect(name.to_string())))
 }
 
-pub fn ref_addr<'a, E>(input: &'a str) -> IResult<&'a str, Reference, E>
-where
-    E: ParseError<&'a str> + TagError<&'a str, &'a str>,
-{
+pub fn ref_addr<'a>(input: &'a str) -> IResult<Reference> {
     let (input, name) = preceded(char('#'), sym)(input)?;
     Ok((input, Reference::Addr(name.to_string())))
 }
 
-pub fn ref_val<'a, E>(input: &'a str) -> IResult<&'a str, Reference, E>
-where
-    E: ParseError<&'a str> + FromExternalError<&'a str, ParseIntError>,
-{
+pub fn ref_val<'a>(input: &'a str) -> IResult<Reference> {
     let (input, name) = number(input)?;
     Ok((input, Reference::Value(name)))
 }
 
-pub fn ref_div<'a, E>(input: &'a str) -> IResult<&'a str, Reference, E>
-where
-    E: ParseError<&'a str> + FromExternalError<&'a str, ParseIntError> + TagError<&'a str, &'a str>,
-{
+pub fn ref_div<'a>(input: &'a str) -> IResult<Reference> {
     alt((ref_dir, ref_ind, ref_val))(input)
 }

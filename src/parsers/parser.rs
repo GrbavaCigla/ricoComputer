@@ -1,32 +1,19 @@
-use std::num::ParseIntError;
-
 use super::{
     common::{empty_line, mws, ws},
     declaration::{decl, ref_val},
     instruction::{inst, inst1},
 };
-use crate::types::SyntaxTree;
+use crate::types::{Error, SyntaxTree};
 use nom::{
     branch::alt,
     character::complete::line_ending,
-    combinator::{all_consuming, eof, map_res},
-    error::{FromExternalError, ParseError},
+    combinator::{eof, map_res},
     multi::{many0, many1},
     sequence::{terminated, tuple},
-    IResult,
 };
-use nom_supreme::tag::{complete::tag_no_case, TagError};
+use nom_supreme::{final_parser::final_parser, tag::complete::tag_no_case};
 
-use strum::ParseError as StrumParseError;
-
-pub fn parse<'a, E>(input: &'a str) -> IResult<&'a str, SyntaxTree, E>
-where
-    E: ParseError<&'a str>
-        + FromExternalError<&'a str, ParseIntError>
-        + FromExternalError<&'a str, StrumParseError>
-        + TagError<&'a str, &'a str>
-        + 'a,
-{
+pub fn parse(input: &str) -> Result<SyntaxTree, Error> {
     let org_line = terminated(
         ws(inst1(map_res(tag_no_case("org"), str::parse), ref_val)),
         line_ending,
@@ -39,16 +26,13 @@ where
     let instr_line = terminated(ws(inst), empty_line(alt((line_ending, eof))));
     let instr_part = mws(many1(instr_line));
 
-    let mut syntax = all_consuming(tuple((decl_part, org_part, instr_part)));
+    let mut syntax = final_parser(tuple((decl_part, org_part, instr_part)));
 
-    let (input, st_raw) = syntax(input)?;
+    let st_raw = syntax(input)?;
 
-    Ok((
-        input,
-        SyntaxTree {
-            declarations: st_raw.0,
-            org: st_raw.1,
-            instructions: st_raw.2,
-        },
-    ))
+    Ok(SyntaxTree {
+        declarations: st_raw.0,
+        org: st_raw.1,
+        instructions: st_raw.2,
+    })
 }
