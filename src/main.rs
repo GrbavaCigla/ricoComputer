@@ -8,7 +8,7 @@ mod types;
 use commands::{compile, run};
 use opt::Opt;
 
-use anyhow::Result;
+use miette::Result;
 
 fn main() -> Result<()> {
     let opts: Opt = Opt::from_args();

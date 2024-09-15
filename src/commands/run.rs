@@ -1,5 +1,5 @@
 use std::path::Path;
-use anyhow::Result;
+use miette::Result;
 
 
 pub fn run<P: AsRef<Path>>(source: P) -> Result<()> {
