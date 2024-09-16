@@ -21,13 +21,25 @@ SUBCOMMANDS:
     run        Run pc file on VM
 ```
 
+## Error reporting
+Full support for detailed errors is not yet done. This is how it looks now:
+```
+Error:   × Syntax error encountered.
+   ╭─[file:8:1]
+ 7 │ 
+ 8 │ this_instruction_doesnt_exist a
+   · ▲
+ 9 │ stop (a)
+   ╰────
+```
+
 ## Roadmap
 
 - Parser
     - [x] Basic syntax
     - [ ] Comments
     - [ ] Labels
-    - [ ] Underscore character in numbers for better readability
+    - [x] Underscore character in numbers for better readability
     - [ ] Plus character in numbers
     - [ ] Complete instructionset
         - [x] STOP

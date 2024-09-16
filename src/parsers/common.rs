@@ -1,8 +1,9 @@
 use nom::{
-    character::complete::{digit1, multispace0, space0},
+    character::complete::{char, digit1, multispace0, one_of, space0},
     combinator::{map_res, recognize},
     error::{FromExternalError, ParseError},
-    sequence::{delimited, terminated},
+    multi::{many0, many1},
+    sequence::{delimited, pair, terminated},
     IResult, Parser,
 };
 use std::str::FromStr;
@@ -28,7 +29,11 @@ where
     E: FromExternalError<&'a str, E1> + ParseError<&'a str>,
     T: FromStr<Err = E1>,
 {
-    map_res(recognize(digit1), str::parse).parse(input)
+    map_res(
+        recognize(many1(terminated(one_of("0123456789"), many0(char('_'))))),
+        |s| str::parse(&str::replace(s, "_", "")[..]),
+    )
+    .parse(input)
 }
 
 pub fn empty_line<'a, F: 'a, O, E>(inner: F) -> impl FnMut(&'a str) -> IResult<&'a str, O, E>
