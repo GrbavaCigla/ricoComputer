@@ -32,7 +32,7 @@ SUBCOMMANDS:
     - [ ] Complete instructionset
         - [x] STOP
         - [x] ORG
-        - [ ] MOV
+        - [x] MOV (Array MOV missing)
         - [ ] Arithmetic
         - [ ] Branch
         - [ ] I/O
@@ -43,7 +43,7 @@ SUBCOMMANDS:
     - [ ] Complete instructionset
         - [x] STOP
         - [x] ORG
-        - [ ] MOV
+        - [x] MOV (Array MOV missing)
         - [ ] Arithmetic
         - [ ] Branch
         - [ ] I/O

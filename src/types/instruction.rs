@@ -5,8 +5,9 @@ use super::declaration::Reference;
 #[derive(Debug, EnumString, Clone, Copy)]
 #[strum(ascii_case_insensitive)]
 pub enum InstructionName {
-    ORG,
+    MOV = 0b0000,
     STOP = 0b1111,
+    ORG,
 }
 
 #[derive(Debug)]

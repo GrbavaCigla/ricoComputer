@@ -9,7 +9,7 @@ use nom_supreme::tag::complete::tag_no_case;
 
 use crate::types::{Error, IResult, Instruction, InstructionName, Reference};
 
-use super::declaration::ref_di;
+use super::declaration::{ref_di, ref_diva};
 
 pub fn inst_name<'a>(name: &'static str) -> impl FnMut(&'a str) -> IResult<InstructionName> {
     move |input: &'a str| map_res(tag_no_case(name), str::parse).parse(input)
@@ -56,14 +56,15 @@ where
     }
 }
 
-pub fn inst2<'a, F, R>(
+pub fn inst2<'a, F, R1, R2>(
     mut instr: F,
-    mut arg1: R,
-    mut arg2: R,
+    mut arg1: R1,
+    mut arg2: R2,
 ) -> impl FnMut(&'a str) -> IResult<Instruction>
 where
     F: Parser<&'a str, InstructionName, Error<'a>>,
-    R: Parser<&'a str, Reference, Error<'a>>,
+    R1: Parser<&'a str, Reference, Error<'a>>,
+    R2: Parser<&'a str, Reference, Error<'a>>,
 {
     move |input: &'a str| {
         let (input, instr_name) = instr.parse(input)?;
@@ -86,15 +87,17 @@ where
     }
 }
 
-pub fn inst3<'a, F, R>(
+pub fn inst3<'a, F, R1, R2, R3>(
     mut instr: F,
-    mut arg1: R,
-    mut arg2: R,
-    mut arg3: R,
+    mut arg1: R1,
+    mut arg2: R2,
+    mut arg3: R3,
 ) -> impl FnMut(&'a str) -> IResult<Instruction>
 where
     F: Parser<&'a str, InstructionName, Error<'a>>,
-    R: Parser<&'a str, Reference, Error<'a>>,
+    R1: Parser<&'a str, Reference, Error<'a>>,
+    R2: Parser<&'a str, Reference, Error<'a>>,
+    R3: Parser<&'a str, Reference, Error<'a>>,
 {
     move |input: &'a str| {
         let (input, instr_name) = instr.parse(input)?;
@@ -128,5 +131,6 @@ pub fn inst<'a>(input: &'a str) -> IResult<Instruction> {
         inst2(inst_name("stop"), ref_di, ref_di),
         inst1(inst_name("stop"), ref_di),
         inst0(inst_name("stop")),
+        inst2(inst_name("mov"), ref_di, ref_diva),
     ))(input)
 }

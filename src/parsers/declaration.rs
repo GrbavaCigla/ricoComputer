@@ -58,3 +58,7 @@ pub fn ref_div<'a>(input: &'a str) -> IResult<Reference> {
 pub fn ref_di<'a>(input: &'a str) -> IResult<Reference> {
     alt((ref_dir, ref_ind))(input)
 }
+
+pub fn ref_diva<'a>(input: &'a str) -> IResult<Reference> {
+    alt((ref_dir, ref_ind, ref_val, ref_addr))(input)
+}
