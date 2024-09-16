@@ -37,7 +37,7 @@ SUBCOMMANDS:
             - [ ] Type 4 (arrays)
         - [x] Arithmetic
         - [ ] Branch
-        - [ ] I/O
+        - [X] I/O
         - [ ] Subroutine
 - Assembler
     - [x] Assembles basic programs
@@ -50,7 +50,7 @@ SUBCOMMANDS:
             - [ ] Type 4 (arrays)
         - [x] Arithmetic
         - [ ] Branch
-        - [ ] I/O
+        - [X] I/O
         - [ ] Subroutine
 - VM
 

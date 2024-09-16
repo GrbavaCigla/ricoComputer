@@ -11,6 +11,8 @@ pub enum InstructionName {
     MUL = 0b0011,
     DIV = 0b0100,
     STOP = 0b1111,
+    IN = 0b0111,
+    OUT = 0b1000,
     ORG,
 }
 

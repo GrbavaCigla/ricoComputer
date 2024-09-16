@@ -158,5 +158,9 @@ pub fn inst<'a>(input: &'a str) -> IResult<Instruction> {
             ref_diva,
             ref_di,
         ),
+
+        // I/O
+        inst2(alt((inst_name("in"), inst_name("out"))), ref_di, ref_diva),
+        inst1(alt((inst_name("in"), inst_name("out"))), ref_di)
     ))(input)
 }

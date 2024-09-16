@@ -36,6 +36,7 @@ pub fn assemble(syntax_tree: &SyntaxTree) -> Result<Vec<u8>> {
     Ok(res)
 }
 
+// TODO: There is a better way to handle Arithmetic instruction types, but I am to lazy to refactor it now
 fn handle_instruction(lt: &HashMap<&str, u16>, inst: &Instruction) -> Result<(Word, Option<Word>)> {
     match inst.name {
         InstructionName::STOP => Ok((
@@ -68,7 +69,6 @@ fn handle_instruction(lt: &HashMap<&str, u16>, inst: &Instruction) -> Result<(Wo
         | InstructionName::MUL
         | InstructionName::DIV => Ok((
             Word::from([
-                // (inst.name as u8),
                 match (inst.arg2.as_ref().unwrap(), inst.arg3.as_ref().unwrap()) {
                     (Reference::Value(_), Reference::Direct(_) | Reference::Indirect(_))
                     | (Reference::Direct(_) | Reference::Indirect(_), Reference::Value(_))
@@ -94,6 +94,7 @@ fn handle_instruction(lt: &HashMap<&str, u16>, inst: &Instruction) -> Result<(Wo
                 _ => None,
             },
         )),
+        InstructionName::IN | InstructionName::OUT => Ok((handle_io_instruction(lt, inst)?, None)),
         InstructionName::ORG => unreachable!(),
     }
 }
@@ -114,4 +115,22 @@ fn get_symbol(lt: &HashMap<&str, u16>, name: &str) -> Result<u16> {
     Ok(*lt
         .get(name)
         .ok_or(miette!("Symbol \"{}\" not declared.", name))?)
+}
+
+fn handle_io_instruction(lt: &HashMap<&str, u16>, inst: &Instruction) -> Result<Word> {
+    let inst_ref = inst.arg2.as_ref().unwrap_or(&Reference::Value(1));
+    let half = match inst_ref {
+        Reference::Direct(_) | Reference::Indirect(_) => {
+            (convert_ref(lt, Some(inst_ref))? | 0b1000_0000) & 0b1000_1111
+        }
+        Reference::Value(v) => 0b0111_1111 & *v as u8,
+        Reference::Addr(s) => 0b0111_1111 & get_symbol(lt, s)? as u8,
+    };
+
+    Ok(Word::from([
+        inst.name as u8,
+        convert_ref(lt, inst.arg1.as_ref())?,
+        0b1111 & (half >> 4) as u8,
+        0b1111 & half as u8,
+    ]))
 }
