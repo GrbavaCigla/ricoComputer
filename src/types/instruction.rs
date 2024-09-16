@@ -6,6 +6,10 @@ use super::declaration::Reference;
 #[strum(ascii_case_insensitive)]
 pub enum InstructionName {
     MOV = 0b0000,
+    ADD = 0b0001,
+    SUB = 0b0010,
+    MUL = 0b0011,
+    DIV = 0b0100,
     STOP = 0b1111,
     ORG,
 }

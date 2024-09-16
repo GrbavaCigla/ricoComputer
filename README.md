@@ -32,8 +32,10 @@ SUBCOMMANDS:
     - [ ] Complete instructionset
         - [x] STOP
         - [x] ORG
-        - [x] MOV (Array MOV missing)
-        - [ ] Arithmetic
+        - [x] MOV
+            - [ ] Type 3 (arrays)
+            - [ ] Type 4 (arrays)
+        - [x] Arithmetic
         - [ ] Branch
         - [ ] I/O
         - [ ] Subroutine
@@ -43,8 +45,10 @@ SUBCOMMANDS:
     - [ ] Complete instructionset
         - [x] STOP
         - [x] ORG
-        - [x] MOV (Array MOV missing)
-        - [ ] Arithmetic
+        - [x] MOV
+            - [ ] Type 3 (arrays)
+            - [ ] Type 4 (arrays)
+        - [x] Arithmetic
         - [ ] Branch
         - [ ] I/O
         - [ ] Subroutine

@@ -126,11 +126,37 @@ where
 
 pub fn inst<'a>(input: &'a str) -> IResult<Instruction> {
     alt((
-        // inst1(inst_name("org"), ref_val),
+        // STOP
         inst3(inst_name("stop"), ref_di, ref_di, ref_di),
         inst2(inst_name("stop"), ref_di, ref_di),
         inst1(inst_name("stop"), ref_di),
         inst0(inst_name("stop")),
+        
+        // MOV
         inst2(inst_name("mov"), ref_di, ref_diva),
+
+        // Arithmetic
+        inst3(
+            alt((
+                inst_name("add"),
+                inst_name("sub"),
+                inst_name("mul"),
+                inst_name("div"),
+            )),
+            ref_di,
+            ref_di,
+            ref_diva,
+        ),
+        inst3(
+            alt((
+                inst_name("add"),
+                inst_name("sub"),
+                inst_name("mul"),
+                inst_name("div"),
+            )),
+            ref_di,
+            ref_diva,
+            ref_di,
+        ),
     ))(input)
 }
