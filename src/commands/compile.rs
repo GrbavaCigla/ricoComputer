@@ -1,8 +1,7 @@
 use std::{
-    fmt::Display,
     fs::{read_to_string, File},
     io::Write,
-    path::{Path, PathBuf},
+    path::Path,
 };
 
 use crate::{asm::assemble, parsers::parse, types::SyntaxError};
@@ -21,10 +20,10 @@ pub fn run<P: AsRef<Path>>(source: P, output: Option<P>) -> Result<()> {
         Err(e) => {
             let src = source.as_ref().display().to_string();
             let offset = match e {
-                GenericErrorTree::Base { location, kind } => {
+                GenericErrorTree::Base { location, kind: _ } => {
                     ByteOffset::recreate_context(&source_text[..], location).0
                 }
-                GenericErrorTree::Stack { base, contexts } => {
+                GenericErrorTree::Stack { base: _, contexts } => {
                     ByteOffset::recreate_context(&source_text[..], contexts[0].0).0
                 }
                 GenericErrorTree::Alt(_) => todo!(),

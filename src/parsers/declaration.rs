@@ -62,10 +62,6 @@ pub fn ref_val<'a>(input: &'a str) -> IResult<Reference> {
     ))
 }
 
-pub fn ref_div<'a>(input: &'a str) -> IResult<Reference> {
-    alt((ref_dir, ref_ind, ref_val))(input)
-}
-
 pub fn ref_di<'a>(input: &'a str) -> IResult<Reference> {
     alt((ref_dir, ref_ind))(input)
 }
