@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use crate::types::{Instruction, InstructionName, Word};
 use crate::types::{Reference, SyntaxTree};
 use miette::miette;
 use miette::Result;
@@ -17,26 +18,41 @@ pub fn assemble(syntax_tree: &SyntaxTree) -> Result<Vec<u8>> {
         0,
     ];
 
-    let mut lookup_table = HashMap::new();
+    let mut lookup_table: HashMap<&str, u16> = HashMap::new();
     for (i, decl) in syntax_tree.declarations.iter().enumerate() {
         lookup_table.insert(&decl.symbol[..], decl.value);
     }
 
     for inst in syntax_tree.instructions.iter() {
-        let byte_code = get_word([
-            inst.name as u8,
-            convert_ref_to_addr(&lookup_table, inst.arg1.as_ref())?,
-            convert_ref_to_addr(&lookup_table, inst.arg2.as_ref())?,
-            convert_ref_to_addr(&lookup_table, inst.arg3.as_ref())?,
-        ]);
-        res.push(byte_code.0);
-        res.push(byte_code.1);
+        let dword = handle_instruction(&lookup_table, inst)?;
+        res.push(dword.0.0);
+        res.push(dword.0.1);
+        if let Some(word) = dword.1 {
+            res.push(word.0);
+            res.push(word.1);
+        }
     }
 
     Ok(res)
 }
 
-fn convert_ref_to_addr(lt: &HashMap<&str, u16>, refer: Option<&Reference>) -> Result<u8> {
+fn handle_instruction(lt: &HashMap<&str, u16>, inst: &Instruction) -> Result<(Word, Option<Word>)> {
+    match inst.name {
+        InstructionName::STOP => Ok((
+            get_word([
+                inst.name as u8,
+                convert_ref(lt, inst.arg1.as_ref())?,
+                convert_ref(lt, inst.arg2.as_ref())?,
+                convert_ref(lt, inst.arg3.as_ref())?,
+            ]),
+            None,
+        )),
+        InstructionName::ORG => unreachable!(),
+    }
+}
+
+fn convert_ref(lt: &HashMap<&str, u16>, refer: Option<&Reference>) -> Result<u8> {
+    // TODO: Add error for illegal addresses, currently it only cuts off the rest
     match refer {
         Some(r) => match r {
             Reference::Direct(s) => Ok((*lt
@@ -55,10 +71,13 @@ fn convert_ref_to_addr(lt: &HashMap<&str, u16>, refer: Option<&Reference>) -> Re
     }
 }
 
-fn get_word(mut word: [u8; 4]) -> (u8, u8) {
+fn get_word(mut word: [u8; 4]) -> Word {
     for part in word.iter_mut() {
         *part &= 0b1111;
     }
 
-    ((word[2] << 4) | word[3], (word[0] << 4) | word[1])
+    Word {
+        0: (word[2] << 4) | word[3],
+        1: (word[0] << 4) | word[1],
+    }
 }

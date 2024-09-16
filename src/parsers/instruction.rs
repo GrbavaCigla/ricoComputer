@@ -9,6 +9,8 @@ use nom_supreme::tag::complete::tag_no_case;
 
 use crate::types::{Error, IResult, Instruction, InstructionName, Reference};
 
+use super::declaration::ref_di;
+
 pub fn inst_name<'a>(name: &'static str) -> impl FnMut(&'a str) -> IResult<InstructionName> {
     move |input: &'a str| map_res(tag_no_case(name), str::parse).parse(input)
 }
@@ -122,9 +124,9 @@ where
 pub fn inst<'a>(input: &'a str) -> IResult<Instruction> {
     alt((
         // inst1(inst_name("org"), ref_val),
+        inst3(inst_name("stop"), ref_di, ref_di, ref_di),
+        inst2(inst_name("stop"), ref_di, ref_di),
+        inst1(inst_name("stop"), ref_di),
         inst0(inst_name("stop")),
-        // inst1(inst_name("stop"), ref_div),
-        // inst2(inst_name("stop"), ref_div, ref_div),
-        // inst3(inst_name("stop"), ref_div, ref_div, ref_div),
     ))(input)
 }
