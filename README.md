@@ -39,7 +39,7 @@ SUBCOMMANDS:
         - [ ] Subroutine
 - Assembler
     - [x] Assembles basic programs
-    - [ ] Value and Address references (two word support)
+    - [x] Value and Address references (two word support)
     - [ ] Complete instructionset
         - [x] STOP
         - [x] ORG
