@@ -1,6 +1,7 @@
 use nom::{
-    character::complete::{char, digit1, multispace0, one_of, space0},
-    combinator::{map_res, recognize},
+    branch::alt,
+    character::complete::{char, multispace0, one_of, space0},
+    combinator::{map_res, opt, recognize},
     error::{FromExternalError, ParseError},
     multi::{many0, many1},
     sequence::{delimited, pair, terminated},
@@ -24,14 +25,23 @@ where
     delimited(space0, inner, space0)
 }
 
-pub fn number<'a, T, E, E1>(input: &'a str) -> IResult<&'a str, T, E>
+pub fn number<'a, T, E, E1>(input: &'a str) -> IResult<&'a str, (T, bool), E>
 where
     E: FromExternalError<&'a str, E1> + ParseError<&'a str>,
     T: FromStr<Err = E1>,
 {
     map_res(
-        recognize(many1(terminated(one_of("0123456789"), many0(char('_'))))),
-        |s| str::parse(&str::replace(s, "_", "")[..]),
+        recognize(pair(
+            opt(alt((char::<&str, E>('+'), char('-')))),
+            many1(terminated(one_of("0123456789"), many0(char('_')))),
+        )),
+        |s| {
+            match s.starts_with('-') {
+                true => str::parse::<T>(&str::replace(s, "_", "")[1..]),
+                false => str::parse::<T>(&str::replace(s, "_", "")[..]),
+            }
+            .map(|x| (x, s.starts_with('-')))
+        },
     )
     .parse(input)
 }

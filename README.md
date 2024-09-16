@@ -40,7 +40,8 @@ Error:   × Syntax error encountered.
     - [ ] Comments
     - [ ] Labels
     - [x] Underscore character in numbers for better readability
-    - [ ] Plus character in numbers
+    - [x] Plus character in numbers
+    - [x] Negative numbers numbers
     - [ ] Complete instructionset
         - [x] STOP
         - [x] ORG

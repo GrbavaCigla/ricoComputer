@@ -1,3 +1,5 @@
+use std::num::Wrapping;
+
 use nom::{
     branch::alt,
     character::complete::{alpha1, alphanumeric1, char, space0},
@@ -26,7 +28,10 @@ pub fn decl<'a>(input: &'a str) -> IResult<Declaration> {
         input,
         Declaration {
             symbol: symbol.to_string(),
-            value: value,
+            value: match value.1 {
+                true => (Wrapping(0_u16) - Wrapping(value.0)).0,
+                false => value.0
+            }
         },
     ))
 }
@@ -47,8 +52,14 @@ pub fn ref_addr<'a>(input: &'a str) -> IResult<Reference> {
 }
 
 pub fn ref_val<'a>(input: &'a str) -> IResult<Reference> {
-    let (input, name) = number(input)?;
-    Ok((input, Reference::Value(name)))
+    let (input, val) = number(input)?;
+    Ok((
+        input,
+        Reference::Value(match val.1 {
+            true => (Wrapping(0_u16) - Wrapping(val.0)).0,
+            false => val.0,
+        }),
+    ))
 }
 
 pub fn ref_div<'a>(input: &'a str) -> IResult<Reference> {
