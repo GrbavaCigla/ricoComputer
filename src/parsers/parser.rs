@@ -1,5 +1,5 @@
 use super::{
-    common::{empty_line, mws, ws},
+    common::{empty_line, mws, rm_bom, ws},
     declaration::{decl, ref_val},
     instruction::{inst, inst1},
 };
@@ -26,7 +26,7 @@ pub fn parse(input: &str) -> Result<SyntaxTree, Error> {
     let instr_line = terminated(ws(inst), empty_line(alt((line_ending, eof))));
     let instr_part = mws(many1(instr_line));
 
-    let mut syntax = final_parser(tuple((decl_part, org_part, instr_part)));
+    let mut syntax = final_parser(rm_bom(tuple((decl_part, org_part, instr_part))));
 
     let st_raw = syntax(input)?;
 

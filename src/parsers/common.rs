@@ -4,7 +4,7 @@ use nom::{
     combinator::{map_res, opt, recognize},
     error::{FromExternalError, ParseError},
     multi::{many0, many1},
-    sequence::{delimited, pair, terminated},
+    sequence::{delimited, pair, preceded, terminated},
     IResult, Parser,
 };
 use std::str::FromStr;
@@ -52,4 +52,12 @@ where
     E: ParseError<&'a str>,
 {
     terminated(inner, multispace0)
+}
+
+pub fn rm_bom<'a, F: 'a, O, E>(inner: F) -> impl FnMut(&'a str) -> IResult<&'a str, O, E>
+where
+    F: Parser<&'a str, O, E>,
+    E: ParseError<&'a str>,
+{
+    preceded(opt(char('\u{feff}')), inner)
 }

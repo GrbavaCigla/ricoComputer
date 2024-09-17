@@ -1,0 +1,3 @@
+[submodule "examples/SI1P1-K1"]
+	path = examples/SI1P1-K1
+	url = https://github.com/vomindoraan/SI1P1-K1.git
