@@ -4,7 +4,7 @@ mod syntax;
 mod error;
 mod word;
 
-pub use declaration::{Declaration, Reference};
+pub use declaration::{Declaration, Reference, Label};
 pub use instruction::{Instruction, InstructionName};
 pub use syntax::SyntaxTree;
 pub use error::SyntaxError;
