@@ -1,7 +1,7 @@
 use nom::{
     branch::alt,
-    character::complete::{char, multispace0, one_of, space0},
-    combinator::{map_res, opt, recognize},
+    character::complete::{char, line_ending, multispace0, one_of, space0, space1},
+    combinator::{eof, map_res, opt, recognize, value},
     error::{FromExternalError, ParseError},
     multi::{many0, many1},
     sequence::{delimited, pair, preceded, terminated},
@@ -46,12 +46,104 @@ where
     .parse(input)
 }
 
-pub fn empty_line<'a, F: 'a, O, E>(inner: F) -> impl FnMut(&'a str) -> IResult<&'a str, O, E>
+pub fn comment<'a, E, O, F>(mut terminator: F) -> impl FnMut(&'a str) -> IResult<&'a str, (), E>
 where
     F: Parser<&'a str, O, E>,
     E: ParseError<&'a str>,
 {
-    terminated(inner, multispace0)
+    move |input: &'a str| {
+        let (mut input, _) = char(';').parse(input)?;
+
+        loop {
+            if let Ok((inp, _)) = terminator.parse(input) {
+                return Ok((inp, ()));
+            }
+
+            // TODO: Check unicode?
+            let mut chars = input.chars();
+            chars.next();
+            input = chars.as_str();
+        }
+    }
+}
+
+pub fn opt_comment_end<'a, E, O, F>(terminator: F) -> impl Fn(&'a str) -> IResult<&'a str, (), E>
+where
+    F: Parser<&'a str, O, E> + Clone,
+    E: ParseError<&'a str>,
+{
+    move |input: &'a str| {
+        let term1 = terminator.clone();
+        let term2 = terminator.clone();
+        alt((value((), term1), comment(term2))).parse(input)
+    }
+}
+
+pub fn cmultispace0<'a, E, F, O>(
+    terminator: F,
+) -> impl Fn(&'a str) -> IResult<&'a str, (), E>
+where
+    F: Parser<&'a str, O, E> + Clone + 'a,
+    E: ParseError<&'a str> + 'a,
+    O: 'a,
+{
+    move |input: &'a str| {
+        let (input, _) = many0(alt((
+            value((), ws(comment(terminator.clone()))),
+            value((), line_ending),
+            value((), space1),
+        )))
+        .parse(input)?;
+
+        return Ok((input, ()));
+    }
+}
+
+pub fn cmws<'a, E, F1, F2, O, O1>(
+    mut inner: F1,
+    terminator: F2,
+) -> impl FnMut(&'a str) -> IResult<&'a str, O, E>
+where
+    F1: Parser<&'a str, O, E>,
+    F2: Parser<&'a str, O1, E> + Clone + 'a,
+    E: ParseError<&'a str> + 'a,
+    O1: 'a,
+{
+    move |input: &'a str| {
+        let term1 = terminator.clone();
+        let term2 = terminator.clone();
+
+        let (input, _) = cmultispace0(term1).parse(input)?;
+        let (input, val) = inner.parse(input)?;
+        let (input, _) = cmultispace0(term2).parse(input)?;
+
+        Ok((input, val))
+    }
+}
+
+pub fn eofl<'a, E>(input: &'a str) -> IResult<&'a str, (), E>
+where
+    E: ParseError<&'a str>,
+{
+    value((), alt((line_ending, eof))).parse(input)
+}
+
+pub fn empty_line<'a, E, F1, F2, O, O1>(
+    mut inner: F1,
+    terminator: F2,
+) -> impl FnMut(&'a str) -> IResult<&'a str, O, E>
+where
+    F1: Parser<&'a str, O, E>,
+    F2: Parser<&'a str, O1, E> + Clone + 'a,
+    E: ParseError<&'a str> + 'a,
+    O1: 'a,
+{
+    move |input: &'a str| {
+        let (input, val) = inner.parse(input)?;
+        let (input, _) = cmultispace0(terminator.clone()).parse(input)?;
+
+        Ok((input, val))
+    }
 }
 
 pub fn rm_bom<'a, F: 'a, O, E>(inner: F) -> impl FnMut(&'a str) -> IResult<&'a str, O, E>
@@ -59,5 +151,6 @@ where
     F: Parser<&'a str, O, E>,
     E: ParseError<&'a str>,
 {
+    // TODO: Add more BOMs
     preceded(opt(char('\u{feff}')), inner)
 }
