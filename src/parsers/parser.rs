@@ -14,14 +14,14 @@ pub fn parse(input: &str) -> Result<SyntaxTree, Error> {
         ws(inst1(map_res(tag_no_case("org"), str::parse), ref_val)),
         opt_comment_end(line_ending),
     );
-    let org_part = mws(org_line);
+    let org_part = cmws(org_line, line_ending);
     
 
     let decl_line = terminated(ws(decl), empty_line(opt_comment_end(line_ending), line_ending));
     let decl_part = cmws(many0(decl_line), line_ending);
 
     let instr_line = terminated(ws(inst), empty_line(opt_comment_end(eofl), eofl));
-    let instr_part = mws(many1(instr_line));
+    let instr_part = cmws(many1(instr_line), eofl);
 
     let mut syntax = final_parser(rm_bom(tuple((decl_part, org_part, instr_part))));
 
