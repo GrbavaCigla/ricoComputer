@@ -7,12 +7,6 @@ pub struct Declaration {
     pub value: u16,
 }
 
-#[derive(Debug, PartialEq)]
-pub struct Label {
-    pub symbol: String,
-    pub value: u16,
-}
-
 // TODO: Recheck type for value
 #[derive(Debug, EnumTryAs, Clone)]
 pub enum Reference {

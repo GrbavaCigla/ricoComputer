@@ -1,15 +1,15 @@
 use std::collections::HashMap;
 
+mod arithmetic;
+mod branch;
 mod common;
 mod io;
 mod mov;
 mod stop;
-mod arithmetic;
-mod branch;
 
-use crate::types::{Instruction, InstructionName, Word};
 use crate::types::SyntaxTree;
-use miette::Result;
+use crate::types::{Instruction, InstructionName, Reference, Word};
+use miette::{miette, Result};
 
 pub fn assemble(syntax_tree: &SyntaxTree) -> Result<Vec<u8>> {
     let mut res = vec![
@@ -29,8 +29,17 @@ pub fn assemble(syntax_tree: &SyntaxTree) -> Result<Vec<u8>> {
         lookup_table.insert(&decl.symbol[..], decl.value);
     }
 
-    for inst in syntax_tree.instructions.iter() {
-        let dword = handle_instruction(&lookup_table, inst)?;
+    let start_address = match &syntax_tree.org.arg1 {
+        Some(r @ Reference::Value(v)) => *v,
+        None | Some(_) => return Err(miette!("Cannot get start address from ORG instruction.")),
+    };
+
+    for (i, inst) in syntax_tree.instructions.iter().enumerate() {
+        if let Some(l) = inst.0 {
+            lookup_table.insert(l, i as u16 * 2 + start_address);
+        }
+
+        let dword = handle_instruction(&lookup_table, &inst.1)?;
         res.push(dword.0 .0);
         res.push(dword.0 .1);
         if let Some(word) = dword.1 {

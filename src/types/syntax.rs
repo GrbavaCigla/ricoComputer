@@ -1,10 +1,9 @@
-use super::{Declaration, Instruction, Label};
+use super::{Declaration, Instruction};
 
 // TODO: Recheck type for value
 #[derive(Debug)]
-pub struct SyntaxTree {
+pub struct SyntaxTree<'a> {
     pub org: Instruction,
     pub declarations: Vec<Declaration>,
-    pub instructions: Vec<Instruction>,
-    pub labels: Vec<Label>
+    pub instructions: Vec<(Option<&'a str>, Instruction)>,
 }

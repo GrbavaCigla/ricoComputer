@@ -49,7 +49,7 @@ Error:   × Syntax error encountered.
             - [ ] Type 3 (arrays)
             - [ ] Type 4 (arrays)
         - [x] Arithmetic
-        - [ ] Branch
+        - [x] Branch
         - [X] I/O
         - [ ] Subroutine
 - Assembler

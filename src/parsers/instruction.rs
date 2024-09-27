@@ -2,14 +2,14 @@ use nom::{
     branch::alt,
     character::complete::{char, space0, space1},
     combinator::map_res,
-    sequence::delimited,
+    sequence::{delimited, terminated},
     Parser,
 };
 use nom_supreme::tag::complete::tag_no_case;
 
 use crate::types::{Error, IResult, Instruction, InstructionName, Reference};
 
-use super::declaration::{ref_di, ref_div, ref_diva};
+use super::declaration::{ref_di, ref_div, ref_diva, sym};
 
 pub fn inst_name<'a>(name: &'static str) -> impl FnMut(&'a str) -> IResult<InstructionName> {
     move |input: &'a str| map_res(tag_no_case(name), str::parse).parse(input)
@@ -167,4 +167,8 @@ pub fn inst<'a>(input: &'a str) -> IResult<Instruction> {
         inst3(alt((inst_name("beq"), inst_name("bgt"))), ref_di, ref_div, ref_di),
         inst3(alt((inst_name("beq"), inst_name("bgt"))), ref_div, ref_di, ref_di)
     ))(input)
+}
+
+pub fn label<'a>(input: &'a str) -> IResult<&'a str> {
+    terminated(sym, char(':')).parse(input)
 }
