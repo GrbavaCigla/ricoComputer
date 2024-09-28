@@ -1,5 +1,5 @@
 use super::{
-    common::{cmws, empty_line, eofl, opt_comment_end, rm_bom, ws},
+    common::{cmws, empty_line, eofl, mws, opt_comment_end, rm_bom, ws},
     declaration::{decl, ref_val},
     instruction::{inst, inst1, label},
 };
@@ -10,7 +10,7 @@ use nom::{
 use nom_supreme::{final_parser::final_parser, tag::complete::tag_no_case};
 
 pub fn parse(input: &str) -> Result<SyntaxTree, Error> {
-    let label_prefix = ws(label);
+    let label_prefix = mws(label);
 
     let org_line = terminated(
         ws(inst1(map_res(tag_no_case("org"), str::parse), ref_val)),

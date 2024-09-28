@@ -62,7 +62,8 @@ Error:   × Syntax error encountered.
             - [ ] Type 3 (arrays)
             - [ ] Type 4 (arrays)
         - [x] Arithmetic
-        - [ ] Branch
+        - [x] Branch
+            - [ ] null argument for arg1 or arg2 (WIP)
         - [X] I/O
         - [ ] Subroutine
 - VM

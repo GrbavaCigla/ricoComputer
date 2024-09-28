@@ -38,7 +38,9 @@ pub fn assemble(syntax_tree: &SyntaxTree) -> Result<Vec<u8>> {
         if let Some(l) = inst.0 {
             lookup_table.insert(l, i as u16 * 2 + start_address);
         }
+    }
 
+    for inst in syntax_tree.instructions.iter() {
         let dword = handle_instruction(&lookup_table, &inst.1)?;
         res.push(dword.0 .0);
         res.push(dword.0 .1);
