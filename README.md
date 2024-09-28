@@ -37,8 +37,8 @@ Error:   × Syntax error encountered.
 
 - Parser
     - [x] Basic syntax
-    - [ ] Comments
-    - [ ] Labels
+    - [x] Comments
+    - [x] Labels
     - [x] Underscore character in numbers for better readability
     - [x] Plus character in numbers
     - [x] Negative numbers numbers
