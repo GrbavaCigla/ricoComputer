@@ -33,6 +33,5 @@ pub fn parse(input: &str) -> Result<SyntaxTree, Error> {
         declarations: st_raw.0,
         org: st_raw.1,
         instructions: st_raw.2,
-        labels: vec![],
     })
 }
