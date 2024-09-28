@@ -6,6 +6,7 @@ mod common;
 mod io;
 mod mov;
 mod stop;
+mod subroutine;
 
 use crate::types::SyntaxTree;
 use crate::types::{Instruction, InstructionName, Reference, Word};
@@ -63,6 +64,8 @@ fn handle_instruction(lt: &HashMap<&str, u16>, inst: &Instruction) -> Result<(Wo
         | InstructionName::DIV => arithmetic::handle_instruction(lt, inst),
         InstructionName::BEQ | InstructionName::BGT => branch::handle_instruction(lt, inst),
         InstructionName::IN | InstructionName::OUT => io::handle_instruction(lt, inst),
+        InstructionName::JSR => subroutine::handle_instruction(lt, inst),
+        InstructionName::RTS => Ok((Word::from([inst.name as u8, 0, 0, 0]), None)),
         InstructionName::ORG => unreachable!(),
     }
 }

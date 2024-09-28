@@ -14,6 +14,8 @@ pub enum InstructionName {
     BGT = 0b0110,
     IN = 0b0111,
     OUT = 0b1000,
+    JSR = 0b1101,
+    RTS = 0b1110,
     STOP = 0b1111,
     ORG,
 }

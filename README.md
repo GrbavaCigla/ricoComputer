@@ -42,7 +42,7 @@ Error:   × Syntax error encountered.
     - [x] Underscore character in numbers for better readability
     - [x] Plus character in numbers
     - [x] Negative numbers numbers
-    - [ ] Complete instructionset
+    - [x] Complete instructionset
         - [x] STOP
         - [x] ORG
         - [x] MOV
@@ -50,12 +50,12 @@ Error:   × Syntax error encountered.
             - [ ] Type 4 (arrays)
         - [x] Arithmetic
         - [x] Branch
-        - [X] I/O
-        - [ ] Subroutine
+        - [x] I/O
+        - [x] Subroutine
 - Assembler
     - [x] Assembles basic programs
     - [x] Value and Address references (two word support)
-    - [ ] Complete instructionset
+    - [x] Complete instructionset
         - [x] STOP
         - [x] ORG
         - [x] MOV
@@ -64,8 +64,8 @@ Error:   × Syntax error encountered.
         - [x] Arithmetic
         - [x] Branch
             - [ ] null argument for arg1 or arg2 (WIP)
-        - [X] I/O
-        - [ ] Subroutine
+        - [x] I/O
+        - [x] Subroutine
 - VM
 
 ## Sources

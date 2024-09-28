@@ -6,7 +6,7 @@ use common::get_example_sources;
 use ricocomputer::parsers::parse;
 
 #[test]
-fn assemble_examples() {
+fn parse_examples() {
     let mut directory = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     directory.push("examples");
 
