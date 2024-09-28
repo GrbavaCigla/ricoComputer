@@ -1,16 +1,19 @@
 use super::{
-    common::{cmws, empty_line, eofl, mws, opt_comment_end, rm_bom, ws},
+    common::{cmws, comment, empty_line, eofl, mws, opt_comment_end, rm_bom, ws},
     declaration::{decl, ref_val},
     instruction::{inst, inst1, label},
 };
-use crate::types::{Error, SyntaxTree};
+use crate::types::{Error, Instruction, InstructionName, Reference, SyntaxTree};
 use nom::{
-    character::complete::line_ending, combinator::{map_res, opt}, multi::{many0, many1}, sequence::{pair, terminated, tuple}
+    character::complete::line_ending,
+    combinator::{map_res, opt},
+    multi::{many0, many1},
+    sequence::{pair, terminated, tuple},
 };
 use nom_supreme::{final_parser::final_parser, tag::complete::tag_no_case};
 
 pub fn parse(input: &str) -> Result<SyntaxTree, Error> {
-    let label_prefix = mws(label);
+    let label_prefix = cmws(terminated(ws(label), opt(comment(line_ending))), line_ending);
 
     let org_line = terminated(
         ws(inst1(map_res(tag_no_case("org"), str::parse), ref_val)),
