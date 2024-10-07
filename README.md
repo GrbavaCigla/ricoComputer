@@ -35,6 +35,10 @@ Error:   × Syntax error encountered.
 
 ## Roadmap
 
+- General
+    - [ ] Redo error handling (again)
+    - [ ] Restructure project into workspace with multiple crates
+    - [ ] Refactor code
 - Parser
     - [x] Basic syntax
     - [x] Comments
