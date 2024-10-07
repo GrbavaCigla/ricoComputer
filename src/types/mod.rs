@@ -7,7 +7,7 @@ mod word;
 pub use declaration::{Declaration, Reference};
 pub use instruction::{Instruction, InstructionName};
 pub use syntax::SyntaxTree;
-pub use error::SyntaxError;
+pub use error::{SyntaxError, SyntaxErrorContext};
 pub use word::Word;
 
 use nom_supreme::error::ErrorTree;

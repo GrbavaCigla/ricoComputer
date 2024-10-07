@@ -4,10 +4,10 @@ use std::{
     path::Path,
 };
 
-use crate::{asm::assemble, parsers::parse, types::SyntaxError};
+use crate::{asm::assemble, parsers::{error::format_parse_error, parse}, types::SyntaxError};
 use miette::{IntoDiagnostic, NamedSource, Result, SourceSpan};
 use nom_supreme::{
-    error::GenericErrorTree,
+    error::{BaseErrorKind, Expectation, GenericErrorTree},
     final_parser::{ByteOffset, RecreateContext},
 };
 
@@ -17,23 +17,7 @@ pub fn run<P: AsRef<Path>>(source: P, output: Option<P>) -> Result<()> {
     // TODO: this error handling is not done, add a lot more data to error print
     let syntax_tree = match parse(&source_text) {
         Ok(st) => st,
-        Err(e) => {
-            let src = source.as_ref().display().to_string();
-            let offset = match e {
-                GenericErrorTree::Base { location, kind: _ } => {
-                    ByteOffset::recreate_context(&source_text[..], location).0
-                }
-                GenericErrorTree::Stack { base: _, contexts } => {
-                    ByteOffset::recreate_context(&source_text[..], contexts[0].0).0
-                }
-                GenericErrorTree::Alt(_) => todo!(),
-            };
-            let err = SyntaxError {
-                src: NamedSource::new(src, source_text),
-                bad_bit: SourceSpan::new(offset.into(), 0_usize.into()),
-            };
-            return Err(err.into());
-        }
+        Err(e) => return Err(format_parse_error(&source_text, e).into()) 
     };
 
     let byte_code = assemble(&syntax_tree)?;
