@@ -1,6 +1,6 @@
 use nom::{
     branch::alt,
-    character::complete::{char, line_ending, multispace0, one_of, space0, space1},
+    character::complete::{char, line_ending, one_of, space0, space1},
     combinator::{eof, map_res, opt, recognize, value},
     error::{FromExternalError, ParseError},
     multi::{many0, many1},
@@ -8,14 +8,6 @@ use nom::{
     IResult, Parser,
 };
 use std::str::FromStr;
-
-pub fn mws<'a, F: 'a, O, E>(inner: F) -> impl FnMut(&'a str) -> IResult<&'a str, O, E>
-where
-    F: Parser<&'a str, O, E>,
-    E: ParseError<&'a str>,
-{
-    delimited(multispace0, inner, multispace0)
-}
 
 pub fn ws<'a, F: 'a, O, E>(inner: F) -> impl FnMut(&'a str) -> IResult<&'a str, O, E>
 where

@@ -4,12 +4,8 @@ use std::{
     path::Path,
 };
 
-use crate::{asm::assemble, parsers::{error::format_parse_error, parse}, types::SyntaxError};
-use miette::{IntoDiagnostic, NamedSource, Result, SourceSpan};
-use nom_supreme::{
-    error::{BaseErrorKind, Expectation, GenericErrorTree},
-    final_parser::{ByteOffset, RecreateContext},
-};
+use crate::{asm::assemble, parsers::{error::format_parse_error, parse}};
+use miette::{IntoDiagnostic, Result};
 
 pub fn run<P: AsRef<Path>>(source: P, output: Option<P>) -> Result<()> {
     let source_text = read_to_string(&source).into_diagnostic()?;

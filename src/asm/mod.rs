@@ -31,7 +31,7 @@ pub fn assemble(syntax_tree: &SyntaxTree) -> Result<Vec<u8>> {
     }
 
     let start_address = match &syntax_tree.org.arg1 {
-        Some(r @ Reference::Value(v)) => *v,
+        Some(_r @ Reference::Value(v)) => *v,
         None | Some(_) => return Err(miette!("Cannot get start address from ORG instruction.")),
     };
 

@@ -1,9 +1,9 @@
 use super::{
-    common::{cmws, comment, empty_line, eofl, mws, opt_comment_end, rm_bom, ws},
+    common::{cmws, comment, empty_line, eofl, opt_comment_end, rm_bom, ws},
     declaration::{decl, ref_val},
     instruction::{inst, inst1, label},
 };
-use crate::types::{Error, Instruction, InstructionName, Reference, SyntaxTree};
+use crate::types::{Error, SyntaxTree};
 use nom::{
     character::complete::line_ending,
     combinator::{map_res, opt},
