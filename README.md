@@ -71,6 +71,19 @@ Error:   × Syntax error encountered.
         - [x] I/O
         - [x] Subroutine
 - VM
+    - [ ] Run basic programs
+    - [ ] Debugger
+    - [ ] Complete instructionset
+        - [ ] STOP
+        - [ ] ORG
+        - [ ] MOV
+            - [ ] Type 3 (arrays)
+            - [ ] Type 4 (arrays)
+        - [ ] Arithmetic
+        - [ ] Branch
+            - [ ] null argument for arg1 or arg2 (WIP)
+        - [ ] I/O
+        - [ ] Subroutine
 
 ## Sources
 

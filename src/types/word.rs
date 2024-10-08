@@ -22,3 +22,12 @@ impl From<[u8; 4]> for Word {
         }
     }
 }
+
+impl From<[u8; 2]> for Word {
+    fn from(value: [u8; 2]) -> Self {
+        Word {
+            0: 0b1111_1111 & value[0],
+            1: 0b1111_1111 & value[1],
+        }
+    }
+}
