@@ -8,13 +8,11 @@ use crate::types::{SyntaxError, SyntaxErrorContext};
 
 // TODO: Optimize this, turn strings into references, unwrap it with GraphicalReportHandler
 // TODO: Move BaseErrorKind to From trait
-pub fn format_parse_error<'a>(input: &'a str, e: ErrorTree<&'a str>) -> SyntaxError {
-    // let src = source.as_ref().display().to_string();
-    let src = "kita";
+pub fn format_parse_error<'a>(input: &'a str, source_path_str: &'a str, e: ErrorTree<&'a str>) -> SyntaxError {
     match e {
         GenericErrorTree::Base { location, kind } => SyntaxError {
             stack: vec![],
-            src: NamedSource::new(src, input.to_owned()),
+            src: NamedSource::new(source_path_str, input.to_owned()),
             span: SourceSpan::new(
                 ByteOffset::recreate_context(input, location).0.into(),
                 0_usize.into(),
@@ -42,11 +40,11 @@ pub fn format_parse_error<'a>(input: &'a str, e: ErrorTree<&'a str>) -> SyntaxEr
             },
         },
         GenericErrorTree::Stack { base, contexts } => {
-            let mut base = format_parse_error(input, *base);
+            let mut base = format_parse_error(input, source_path_str,*base);
             let mut contexts = contexts
                 .into_iter()
                 .map(|(location, context)| SyntaxErrorContext {
-                    src: NamedSource::new(src, input.to_owned()),
+                    src: NamedSource::new(source_path_str, input.to_owned()),
                     span: SourceSpan::new(
                         ByteOffset::recreate_context(input, location).0.into(),
                         0_usize.into(),
@@ -60,10 +58,9 @@ pub fn format_parse_error<'a>(input: &'a str, e: ErrorTree<&'a str>) -> SyntaxEr
             base.stack.append(&mut contexts);
             base
         }
-        // GenericErrorTree::Alt(alt_errors) => alt_errors.into_iter().map(|e| format_parse_error(input, e)).,
         GenericErrorTree::Alt(alt_errors) => alt_errors
             .into_iter()
-            .map(|e| format_parse_error(input, e))
+            .map(|e| format_parse_error(input, source_path_str, e))
             .max_by_key(|f| f.stack.len())
             .unwrap(),
     }

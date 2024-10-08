@@ -13,7 +13,10 @@ pub fn run<P: AsRef<Path>>(source: P, output: Option<P>) -> Result<()> {
     // TODO: this error handling is not done, add a lot more data to error print
     let syntax_tree = match parse(&source_text) {
         Ok(st) => st,
-        Err(e) => return Err(format_parse_error(&source_text, e).into()) 
+        Err(e) => {
+            let src = source.as_ref().display().to_string();
+            return Err(format_parse_error(&source_text, &src, e).into());
+        }
     };
 
     let byte_code = assemble(&syntax_tree)?;
