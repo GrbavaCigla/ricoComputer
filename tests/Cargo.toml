@@ -1,0 +1,17 @@
+[package]
+name = "tests"
+version = "0.1.0"
+edition = "2021"
+
+[dev-dependencies]
+walkdir = "2.5.0"
+rc_asm = { path = "../rc_asm" }
+rc_parser = { path = "../rc_parser" }
+
+[[test]]
+name = "assemble_examples"
+path = "src/assemble_examples.rs"
+
+[[test]]
+name = "parse_examples"
+path = "src/parse_examples.rs"

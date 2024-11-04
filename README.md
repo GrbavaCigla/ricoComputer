@@ -16,20 +16,30 @@ FLAGS:
     -V, --version    Prints version information
 
 SUBCOMMANDS:
-    compile    Compile asm file to binary file for VM
-    help       Prints this message or the help of the given subcommand(s)
-    run        Run pc file on VM
+    asm     Assemble asm file to binary file for VM
+    help    Prints this message or the help of the given subcommand(s)
+    run     Run pc file on VM
 ```
 
 ## Error reporting
 Full support for detailed errors is not yet done. This is how it looks now:
 ```
-Error:   × Syntax error encountered.
-   ╭─[file:8:1]
- 7 │ 
- 8 │ this_instruction_doesnt_exist a
+  × Syntax error encountered.
+   ╭─[file.pca:5:1]
+ 4 │ 
+ 5 │ mv a, 3
    · ▲
- 9 │ stop (a)
+   · ╰── expected "rts"
+ 6 │ 
+   ╰────
+
+Error:   × Syntax error encountered.
+   ╭─[file.pca:5:1]
+ 4 │ 
+ 5 │ mv a, 3
+   · ▲
+   · ╰── while parsing Many1
+ 6 │ 
    ╰────
 ```
 
@@ -37,7 +47,7 @@ Error:   × Syntax error encountered.
 
 - General
     - [ ] Redo error handling (again)
-    - [ ] Restructure project into workspace with multiple crates
+    - [x] Restructure project into workspace with multiple crates
     - [ ] Refactor code
 - Parser
     - [x] Basic syntax
@@ -59,6 +69,7 @@ Error:   × Syntax error encountered.
 - Assembler
     - [x] Assembles basic programs
     - [x] Value and Address references (two word support)
+    - [ ] Raise syntax error instead of silently assembling some side effect
     - [x] Complete instructionset
         - [x] STOP
         - [x] ORG

@@ -1,0 +1,16 @@
+[package]
+name = "rc_cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+structopt = { version = "0.3.26", features = ["color"] }
+miette = { version = "7.2.0", features = ["fancy"] }
+rc_common = { path = "../rc_common" }
+rc_parser = { path = "../rc_parser" }
+rc_vm = { path = "../rc_vm" }
+rc_asm = { path = "../rc_asm" }
+
+[[bin]]
+name = "ricocomputer"
+path = "src/main.rs"

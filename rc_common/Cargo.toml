@@ -1,0 +1,12 @@
+[package]
+name = "rc_common"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+thiserror = "1.0.66"
+miette = "7.2.0"
+nom-supreme = "0.8.0"
+nom = "7.1.3"
+strum = "0.26.3"
+strum_macros = "0.26.4"
