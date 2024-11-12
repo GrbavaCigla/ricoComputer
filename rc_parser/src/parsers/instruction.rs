@@ -5,7 +5,7 @@ use nom::{
     sequence::{delimited, terminated},
     Parser,
 };
-use nom_supreme::{tag::complete::tag_no_case, ParserExt};
+use nom_supreme::tag::complete::tag_no_case;
 
 use rc_common::{Error, IResult, Instruction, InstructionName, Reference};
 
