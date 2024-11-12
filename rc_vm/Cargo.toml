@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 miette = "7.2.0"
 rc_common = { path = "../rc_common" }
+num-traits = "0.2.19"

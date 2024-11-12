@@ -29,3 +29,14 @@ impl Into<u16> for Word {
         self.0 as u16 + ((self.1 as u16) << 8)
     }
 }
+
+impl Into<[u8; 4]> for Word {
+    fn into(self) -> [u8; 4] {
+        [
+            self.1 >> 4 as u8,
+            self.1 & 0b1111 as u8,
+            self.0 >> 4 as u8,
+            self.0 & 0b1111 as u8,
+        ]
+    }
+}

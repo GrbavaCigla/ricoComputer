@@ -8,5 +8,7 @@ pub fn command<P: AsRef<Path>>(_source: P) -> Result<()> {
 
     vm.load(_source)?;
 
+    vm.start();
+
     Ok(())
 }

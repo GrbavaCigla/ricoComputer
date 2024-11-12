@@ -1,8 +1,9 @@
+use num_derive::{FromPrimitive, ToPrimitive};
 use strum_macros::EnumString;
 
 use super::Reference;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, EnumString)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, EnumString, FromPrimitive, ToPrimitive)]
 #[strum(ascii_case_insensitive)]
 pub enum InstructionName {
     MOV = 0b0000,
