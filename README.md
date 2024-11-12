@@ -86,8 +86,7 @@ Error:   × Syntax error encountered.
     - [ ] Run basic programs
     - [ ] Debugger
     - [ ] Complete instructionset
-        - [ ] STOP
-        - [ ] ORG
+        - [x] STOP
         - [ ] MOV
             - [ ] Type 3 (arrays)
             - [ ] Type 4 (arrays)
@@ -95,6 +94,8 @@ Error:   × Syntax error encountered.
         - [ ] Branch
             - [ ] null argument for arg1 or arg2 (WIP)
         - [ ] I/O
+            - [x] OUT
+            - [ ] IN
         - [ ] Subroutine
 
 ## Sources
