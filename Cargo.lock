@@ -362,6 +362,10 @@ dependencies = [
 [[package]]
 name = "rc_vm"
 version = "0.1.0"
+dependencies = [
+ "miette",
+ "rc_common",
+]
 
 [[package]]
 name = "rustc-demangle"

@@ -1,5 +1,6 @@
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct Word(pub u8, pub u8);
+// TODO: Check endianess, seems it is not consistent
 
 impl From<u16> for Word {
     fn from(value: u16) -> Self {
@@ -20,5 +21,11 @@ impl From<[u8; 4]> for Word {
             0: (value[2] << 4) | value[3],
             1: (value[0] << 4) | value[1],
         }
+    }
+}
+
+impl Into<u16> for Word {
+    fn into(self) -> u16 {
+        self.0 as u16 + ((self.1 as u16) << 8)
     }
 }

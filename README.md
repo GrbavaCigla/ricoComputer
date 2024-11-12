@@ -56,6 +56,7 @@ Error:   × Syntax error encountered.
     - [x] Underscore character in numbers for better readability
     - [x] Plus character in numbers
     - [x] Negative numbers numbers
+    - [ ] ORG instruction should be optional (default 8)
     - [x] Complete instructionset
         - [x] STOP
         - [x] ORG
